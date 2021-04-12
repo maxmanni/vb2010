@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>RettangoloApp</RootNamespace>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>RettangoloAppOggetti</AssemblyName>
+  </PropertyGroup>
+
+</Project>
