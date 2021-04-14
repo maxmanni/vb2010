@@ -11,7 +11,7 @@
         p.Visible = True
         p.Size = New Size(20, 200)
         p.Location = New Point(0, 0)
-        p.Value = 15
+        p.Value = 30
 
         Me.Controls.Add(p)
 
