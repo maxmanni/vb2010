@@ -14,6 +14,16 @@
             Dim f As Figura
             f = figure(i)
             Debug.WriteLine(f.Nome + " perimetro = " + Str(f.CalcolaPerimetro()) + " area =" + Str(f.CalcolaArea()))
+            If f.GetType() Is GetType(Cerchio) Then
+                Dim c As Cerchio
+                c = f
+                Debug.WriteLine(" diametro =" + Str(c.GetDiametro()))
+            ElseIf f.GetType() Is GetType(Rettangolo) Then
+                Dim r As Rettangolo
+                r = f
+                Debug.WriteLine(" diagonale =" + Str(r.GetDiagonale()))
+
+            End If
         Next
 
 

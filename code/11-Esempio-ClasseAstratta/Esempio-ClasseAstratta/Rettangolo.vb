@@ -17,4 +17,8 @@
         Return b * h
     End Function
 
+    Public Function GetDiagonale() As Single
+        Return Math.Sqrt(b * b + h * h)
+    End Function
+
 End Class

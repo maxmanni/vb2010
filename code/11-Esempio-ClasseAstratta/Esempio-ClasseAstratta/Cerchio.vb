@@ -15,5 +15,9 @@
         Return r * r * Math.PI
     End Function
 
+    Public Function GetDiametro() As Single
+        Return 2 * r
+    End Function
+
 End Class
 
