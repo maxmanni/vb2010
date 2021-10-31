@@ -4,26 +4,28 @@ Public Class Form1
 
     Public Const databaseName = "stazioni.db"
 
-    Public Const tableComune = "comune"
+    Public Const tableComune = "Comune"
     Public Const pkComune = "Id"
-    Public fieldsComune = New List(Of String) From {pkComune, "Nome", "Popolazione"}
+    Public fieldsComune = New List(Of String)
 
-    Public Const tableStazione = "stazione"
+    Public Const tableStazione = "Stazione"
     Public Const pkStazione = "Id"
-    Public fieldsStazione = New List(Of String) From {pkStazione, "IdComune", "Indirizzo", "Nome", "Latitudine", "Longitudine", "Altitudine"}
+    Public fieldsStazione = New List(Of String)
 
-    Public Const tableRilevazione = "rilevazione"
-    Public fieldsRilevazione = New List(Of String) From {"NumeroProgressivo", "IdStazione", "DataOra", "Temperatura", "Pressione"}
+    Public Const tableRilevazione = "Rilevazione"
+    Public fieldsRilevazione = New List(Of String)
 
 
-    Public Sub readTable(ByVal databasename As String, ByVal tableName As String, ByVal dgv As DataGridView)
+    Public Sub readTable(ByVal databasename As String, ByVal tableName As String, ByVal dgv As DataGridView, ByVal fieldNames As List(Of String))
 
         Dim rowCount As Integer = countRows(databasename, tableName)
 
         Using connection As New SQLiteConnection("Data Source=" + databasename)
 
             dgv.Rows.Clear()
-            dgv.RowCount = rowCount
+            dgv.RowCount = rowCount + 1
+
+            fieldNames.Clear()
 
             connection.Open()
 
@@ -38,23 +40,16 @@ Public Class Form1
                 'nomi delle colonne
                 Dim c As Integer
                 For c = 0 To reader.FieldCount - 1
-                    dgv.Columns(c).HeaderText = reader.GetName(c)
+                    Dim fieldName As String
+                    fieldName = reader.GetName(c)
+                    dgv.Columns(c).HeaderText = fieldName
+                    fieldNames.Add(fieldName)
                 Next
 
                 Dim r As Integer
                 While reader.Read() 'scorro tutte le righe
                     For c = 0 To reader.FieldCount - 1 'scorro tutti i campi della riga
-                        Dim objectValue As Object
-                        Dim tipo As String
-                        tipo = reader.GetDataTypeName(c)
-                        If tipo.IndexOf("int", 0, StringComparison.CurrentCultureIgnoreCase) > -1 Then
-                            objectValue = reader.GetInt32(c).ToString()
-                        ElseIf tipo.IndexOf("decimal", 0, StringComparison.CurrentCultureIgnoreCase) > -1 Then
-                            objectValue = reader.GetDecimal(c).ToString()
-                        Else
-                            objectValue = reader.GetString(c)
-                        End If
-                        dgv.Rows(r).Cells(c).Value = objectValue
+                        dgv.Rows(r).Cells(c).Value = reader(c)
                     Next
                     r = r + 1
                 End While
@@ -150,16 +145,21 @@ Public Class Form1
     End Function
 
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-
-        readTable(databaseName, tableComune, dgvComuni)
-        readTable(databaseName, tableStazione, dgvStazioni)
-        readTable(databaseName, tableRilevazione, dgvRilevazioni)
-
+        readTable(databaseName, tableComune, dgvComuni, fieldsComune)
+        readTable(databaseName, tableStazione, dgvStazioni, fieldsStazione)
+        readTable(databaseName, tableRilevazione, dgvRilevazioni, fieldsRilevazione)
     End Sub
 
-    Private Sub comuneInsert_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles comuneInsert.Click
-        Dim maxId As Integer = getMaxId(databaseName, tableComune, pkComune)
-        insertIntoTable(databaseName, tableComune, fieldsComune, New List(Of String) From {maxId + 1, comuneNome.Text, comunePopolazione.Text})
-        readTable(databaseName, tableComune, dgvComuni)
+    Private Sub InserisciComune_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles inserisciComune.Click
+
+        Dim nextId As Integer = 1 + getMaxId(databaseName, tableComune, pkComune)
+
+        InsertForm.SetFields(fieldsComune, pkComune, nextId)
+        insertForm.OkAction = Sub(fieldValues As List(Of String))
+                                  insertIntoTable(databaseName, tableComune, fieldsComune, fieldValues)
+                                  readTable(databaseName, tableComune, dgvComuni, fieldsComune)
+                              End Sub
+        insertForm.Show()
     End Sub
+
 End Class

@@ -25,14 +25,10 @@ Partial Class Form1
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Label3 = New System.Windows.Forms.Label()
-        Me.comuneInsert = New System.Windows.Forms.Button()
-        Me.comuneNome = New System.Windows.Forms.TextBox()
-        Me.comunePopolazione = New System.Windows.Forms.TextBox()
-        Me.Label4 = New System.Windows.Forms.Label()
-        Me.Label5 = New System.Windows.Forms.Label()
         Me.dgvComuni = New System.Windows.Forms.DataGridView()
         Me.dgvStazioni = New System.Windows.Forms.DataGridView()
         Me.dgvRilevazioni = New System.Windows.Forms.DataGridView()
+        Me.inserisciComune = New System.Windows.Forms.Button()
         CType(Me.dgvComuni, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dgvStazioni, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dgvRilevazioni, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -68,49 +64,6 @@ Partial Class Form1
         Me.Label3.TabIndex = 4
         Me.Label3.Text = "Rilevazioni"
         '
-        'comuneInsert
-        '
-        Me.comuneInsert.Location = New System.Drawing.Point(669, 140)
-        Me.comuneInsert.Name = "comuneInsert"
-        Me.comuneInsert.Size = New System.Drawing.Size(118, 25)
-        Me.comuneInsert.TabIndex = 6
-        Me.comuneInsert.Text = "Inserisci"
-        Me.comuneInsert.UseVisualStyleBackColor = True
-        '
-        'comuneNome
-        '
-        Me.comuneNome.Location = New System.Drawing.Point(716, 49)
-        Me.comuneNome.Name = "comuneNome"
-        Me.comuneNome.Size = New System.Drawing.Size(101, 20)
-        Me.comuneNome.TabIndex = 7
-        '
-        'comunePopolazione
-        '
-        Me.comunePopolazione.Location = New System.Drawing.Point(729, 88)
-        Me.comunePopolazione.Name = "comunePopolazione"
-        Me.comunePopolazione.Size = New System.Drawing.Size(88, 20)
-        Me.comunePopolazione.TabIndex = 8
-        '
-        'Label4
-        '
-        Me.Label4.AutoSize = True
-        Me.Label4.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label4.Location = New System.Drawing.Point(628, 49)
-        Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(42, 16)
-        Me.Label4.TabIndex = 9
-        Me.Label4.Text = "nome"
-        '
-        'Label5
-        '
-        Me.Label5.AutoSize = True
-        Me.Label5.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label5.Location = New System.Drawing.Point(628, 88)
-        Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(83, 16)
-        Me.Label5.TabIndex = 10
-        Me.Label5.Text = "popolazione"
-        '
         'dgvComuni
         '
         Me.dgvComuni.AllowUserToOrderColumns = True
@@ -138,19 +91,24 @@ Partial Class Form1
         Me.dgvRilevazioni.Size = New System.Drawing.Size(594, 230)
         Me.dgvRilevazioni.TabIndex = 13
         '
+        'inserisciComune
+        '
+        Me.inserisciComune.Location = New System.Drawing.Point(666, 79)
+        Me.inserisciComune.Name = "inserisciComune"
+        Me.inserisciComune.Size = New System.Drawing.Size(132, 38)
+        Me.inserisciComune.TabIndex = 14
+        Me.inserisciComune.Text = "Inserisci Comune"
+        Me.inserisciComune.UseVisualStyleBackColor = True
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1009, 802)
+        Me.Controls.Add(Me.inserisciComune)
         Me.Controls.Add(Me.dgvRilevazioni)
         Me.Controls.Add(Me.dgvStazioni)
         Me.Controls.Add(Me.dgvComuni)
-        Me.Controls.Add(Me.Label5)
-        Me.Controls.Add(Me.Label4)
-        Me.Controls.Add(Me.comunePopolazione)
-        Me.Controls.Add(Me.comuneNome)
-        Me.Controls.Add(Me.comuneInsert)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.Label1)
@@ -166,13 +124,9 @@ Partial Class Form1
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents Label2 As System.Windows.Forms.Label
     Friend WithEvents Label3 As System.Windows.Forms.Label
-    Friend WithEvents comuneInsert As System.Windows.Forms.Button
-    Friend WithEvents comuneNome As System.Windows.Forms.TextBox
-    Friend WithEvents comunePopolazione As System.Windows.Forms.TextBox
-    Friend WithEvents Label4 As System.Windows.Forms.Label
-    Friend WithEvents Label5 As System.Windows.Forms.Label
     Friend WithEvents dgvComuni As System.Windows.Forms.DataGridView
     Friend WithEvents dgvStazioni As System.Windows.Forms.DataGridView
     Friend WithEvents dgvRilevazioni As System.Windows.Forms.DataGridView
+    Friend WithEvents inserisciComune As System.Windows.Forms.Button
 
 End Class
