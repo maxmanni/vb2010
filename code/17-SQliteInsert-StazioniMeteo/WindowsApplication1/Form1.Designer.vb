@@ -22,26 +22,21 @@ Partial Class Form1
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.rtbComuni = New System.Windows.Forms.RichTextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
-        Me.rtbStazioni = New System.Windows.Forms.RichTextBox()
         Me.Label3 = New System.Windows.Forms.Label()
-        Me.rtbRilevazioni = New System.Windows.Forms.RichTextBox()
         Me.comuneInsert = New System.Windows.Forms.Button()
         Me.comuneNome = New System.Windows.Forms.TextBox()
         Me.comunePopolazione = New System.Windows.Forms.TextBox()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.Label5 = New System.Windows.Forms.Label()
+        Me.dgvComuni = New System.Windows.Forms.DataGridView()
+        Me.dgvStazioni = New System.Windows.Forms.DataGridView()
+        Me.dgvRilevazioni = New System.Windows.Forms.DataGridView()
+        CType(Me.dgvComuni, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgvStazioni, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgvRilevazioni, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
-        '
-        'rtbComuni
-        '
-        Me.rtbComuni.Location = New System.Drawing.Point(12, 49)
-        Me.rtbComuni.Name = "rtbComuni"
-        Me.rtbComuni.Size = New System.Drawing.Size(610, 193)
-        Me.rtbComuni.TabIndex = 0
-        Me.rtbComuni.Text = ""
         '
         'Label1
         '
@@ -63,31 +58,15 @@ Partial Class Form1
         Me.Label2.TabIndex = 2
         Me.Label2.Text = "Stazioni"
         '
-        'rtbStazioni
-        '
-        Me.rtbStazioni.Location = New System.Drawing.Point(12, 298)
-        Me.rtbStazioni.Name = "rtbStazioni"
-        Me.rtbStazioni.Size = New System.Drawing.Size(610, 193)
-        Me.rtbStazioni.TabIndex = 3
-        Me.rtbStazioni.Text = ""
-        '
         'Label3
         '
         Me.Label3.AutoSize = True
         Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label3.Location = New System.Drawing.Point(12, 503)
+        Me.Label3.Location = New System.Drawing.Point(12, 537)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(84, 20)
         Me.Label3.TabIndex = 4
         Me.Label3.Text = "Rilevazioni"
-        '
-        'rtbRilevazioni
-        '
-        Me.rtbRilevazioni.Location = New System.Drawing.Point(12, 536)
-        Me.rtbRilevazioni.Name = "rtbRilevazioni"
-        Me.rtbRilevazioni.Size = New System.Drawing.Size(610, 193)
-        Me.rtbRilevazioni.TabIndex = 5
-        Me.rtbRilevazioni.Text = ""
         '
         'comuneInsert
         '
@@ -132,38 +111,68 @@ Partial Class Form1
         Me.Label5.TabIndex = 10
         Me.Label5.Text = "popolazione"
         '
+        'dgvComuni
+        '
+        Me.dgvComuni.AllowUserToOrderColumns = True
+        Me.dgvComuni.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvComuni.Location = New System.Drawing.Point(16, 32)
+        Me.dgvComuni.Name = "dgvComuni"
+        Me.dgvComuni.Size = New System.Drawing.Size(594, 214)
+        Me.dgvComuni.TabIndex = 11
+        '
+        'dgvStazioni
+        '
+        Me.dgvStazioni.AllowUserToOrderColumns = True
+        Me.dgvStazioni.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvStazioni.Location = New System.Drawing.Point(16, 283)
+        Me.dgvStazioni.Name = "dgvStazioni"
+        Me.dgvStazioni.Size = New System.Drawing.Size(594, 230)
+        Me.dgvStazioni.TabIndex = 12
+        '
+        'dgvRilevazioni
+        '
+        Me.dgvRilevazioni.AllowUserToOrderColumns = True
+        Me.dgvRilevazioni.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvRilevazioni.Location = New System.Drawing.Point(16, 560)
+        Me.dgvRilevazioni.Name = "dgvRilevazioni"
+        Me.dgvRilevazioni.Size = New System.Drawing.Size(594, 230)
+        Me.dgvRilevazioni.TabIndex = 13
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1009, 748)
+        Me.ClientSize = New System.Drawing.Size(1009, 802)
+        Me.Controls.Add(Me.dgvRilevazioni)
+        Me.Controls.Add(Me.dgvStazioni)
+        Me.Controls.Add(Me.dgvComuni)
         Me.Controls.Add(Me.Label5)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.comunePopolazione)
         Me.Controls.Add(Me.comuneNome)
         Me.Controls.Add(Me.comuneInsert)
-        Me.Controls.Add(Me.rtbRilevazioni)
         Me.Controls.Add(Me.Label3)
-        Me.Controls.Add(Me.rtbStazioni)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.Label1)
-        Me.Controls.Add(Me.rtbComuni)
         Me.Name = "Form1"
         Me.Text = "Form1"
+        CType(Me.dgvComuni, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgvStazioni, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgvRilevazioni, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents rtbComuni As System.Windows.Forms.RichTextBox
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents Label2 As System.Windows.Forms.Label
-    Friend WithEvents rtbStazioni As System.Windows.Forms.RichTextBox
     Friend WithEvents Label3 As System.Windows.Forms.Label
-    Friend WithEvents rtbRilevazioni As System.Windows.Forms.RichTextBox
     Friend WithEvents comuneInsert As System.Windows.Forms.Button
     Friend WithEvents comuneNome As System.Windows.Forms.TextBox
     Friend WithEvents comunePopolazione As System.Windows.Forms.TextBox
     Friend WithEvents Label4 As System.Windows.Forms.Label
     Friend WithEvents Label5 As System.Windows.Forms.Label
+    Friend WithEvents dgvComuni As System.Windows.Forms.DataGridView
+    Friend WithEvents dgvStazioni As System.Windows.Forms.DataGridView
+    Friend WithEvents dgvRilevazioni As System.Windows.Forms.DataGridView
 
 End Class
