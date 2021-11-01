@@ -20,7 +20,7 @@ Public Class Form1
     Public fieldsRilevazione = New List(Of String)
 
 
-    Public Sub readTable(ByVal databasename As String, ByVal tableName As String, ByVal dgv As DataGridView, ByVal fieldNames As List(Of String))
+    Public Sub ReadTable(ByVal databasename As String, ByVal tableName As String, ByVal dgv As DataGridView, ByVal fieldNames As List(Of String))
 
         Dim rowCount As Integer = countRows(databasename, tableName)
 
@@ -80,7 +80,7 @@ Public Class Form1
         Return stringValue
     End Function
 
-    Public Function readRowByPrimaryKey(ByVal databasename As String, ByVal tableName As String, ByVal pkName As String, ByVal pkvalue As String) As List(Of String)
+    Private Function readRowByPrimaryKey(ByVal databasename As String, ByVal tableName As String, ByVal pkName As String, ByVal pkvalue As String) As List(Of String)
 
         Dim fieldValues As New List(Of String)
 
@@ -117,16 +117,16 @@ Public Class Form1
         Return params
     End Function
 
-    Public Sub insertIntoTable(ByVal databasename As String,
+    Public Sub InsertIntoTable(ByVal databasename As String,
                                ByVal tableName As String,
                                ByVal fieldNames As List(Of String),
                                ByVal row As List(Of String))
         Dim rows As New List(Of List(Of String))
         rows.Add(row)
-        insertIntoTable(databasename, tableName, fieldNames, rows)
+        InsertIntoTable(databasename, tableName, fieldNames, rows)
     End Sub
 
-    Public Sub insertIntoTable(ByVal databasename As String,
+    Public Sub InsertIntoTable(ByVal databasename As String,
                                ByVal tableName As String,
                                ByVal fields As List(Of String),
                                ByVal rows As List(Of List(Of String)))
@@ -171,7 +171,7 @@ Public Class Form1
         End Using
     End Sub
 
-    Public Function getMaxId(ByVal databasename As String, ByVal tableName As String, ByVal idFieldName As String) As Integer
+    Private Function getMaxId(ByVal databasename As String, ByVal tableName As String, ByVal idFieldName As String) As Integer
         Using connection As New SQLiteConnection("Data Source=" + databaseName)
 
             connection.Open()
@@ -183,7 +183,7 @@ Public Class Form1
         End Using
     End Function
 
-    Public Function countRows(ByVal databasename As String, ByVal tableName As String) As Integer
+    Private Function countRows(ByVal databasename As String, ByVal tableName As String) As Integer
         Using connection As New SQLiteConnection("Data Source=" + databasename)
 
             connection.Open()
@@ -196,7 +196,7 @@ Public Class Form1
     End Function
 
 
-    Public Sub updateTable(ByVal databasename As String,
+    Public Sub UpdateTable(ByVal databasename As String,
                                ByVal tableName As String,
                                ByVal pkName As String,
                                ByVal pkValue As String,
@@ -224,7 +224,7 @@ Public Class Form1
             Dim command As SQLiteCommand = connection.CreateCommand()
             command.CommandText = String.Format("Update {0} set {1} where {2}=@pkValue", tableName, String.Join(", ", kvPairs), pkName)
             command.Parameters.AddWithValue("@pkValue", pkValue)
-            MsgBox(command.CommandText)
+            'MsgBox(command.CommandText)
 
             paramCount = 0
             For i = 0 To fields.Count - 1
@@ -247,12 +247,35 @@ Public Class Form1
         End Using
     End Sub
 
+    Public Sub DeleteFromTable(ByVal databasename As String,
+                               ByVal tableName As String,
+                               ByVal pkName As String,
+                               ByVal pkValue As String)
+
+        Using connection As New SQLiteConnection("Data Source=" + databasename)
+
+            connection.Open()
+
+            Dim command As SQLiteCommand = connection.CreateCommand()
+            command.CommandText = String.Format("Delete from {0} where {1}=@pkValue", tableName, pkName)
+            command.Parameters.AddWithValue("@pkValue", pkValue)
+            'MsgBox(command.CommandText)
+
+            Try
+                command.ExecuteNonQuery()
+            Catch e As Exception
+                MsgBox(e.Message)
+            End Try
+
+        End Using
+    End Sub
+
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        readTable(databaseName, tableComune, dgvComuni, fieldsComune)
+        ReadTable(databaseName, tableComune, dgvComuni, fieldsComune)
         pkIndexComune = getPrimaryKeyColumnIndex(dgvComuni, pkComune)
-        readTable(databaseName, tableStazione, dgvStazioni, fieldsStazione)
+        ReadTable(databaseName, tableStazione, dgvStazioni, fieldsStazione)
         pkIndexStazione = getPrimaryKeyColumnIndex(dgvStazioni, pkStazione)
-        readTable(databaseName, tableRilevazione, dgvRilevazioni, fieldsRilevazione)
+        ReadTable(databaseName, tableRilevazione, dgvRilevazioni, fieldsRilevazione)
         pkIndexRilevazione = getPrimaryKeyColumnIndex(dgvRilevazioni, pkRilevazione)
     End Sub
 
@@ -262,9 +285,10 @@ Public Class Form1
 
         InsertOrUpdateForm.SetFields(fieldsComune, pkComune, nextId)
         InsertOrUpdateForm.OkAction = Sub(fieldValues As List(Of String))
-                                          insertIntoTable(databaseName, tableComune, fieldsComune, fieldValues)
-                                          readTable(databaseName, tableComune, dgvComuni, fieldsComune)
+                                          InsertIntoTable(databaseName, tableComune, fieldsComune, fieldValues)
+                                          ReadTable(databaseName, tableComune, dgvComuni, fieldsComune)
                                       End Sub
+        InsertOrUpdateForm.Text = "Inserisci Comune"
         InsertOrUpdateForm.Show()
     End Sub
 
@@ -275,6 +299,7 @@ Public Class Form1
                 Return c
             End If
         Next
+        Return -1
     End Function
 
 
@@ -286,14 +311,26 @@ Public Class Form1
             InsertOrUpdateForm.SetFields(fieldsComune, pkComune, Convert.ToInt32(pkValue))
             InsertOrUpdateForm.SetFieldValues(fieldValues)
             InsertOrUpdateForm.OkAction = Sub(modifiedFieldValues As List(Of String))
-                                              MsgBox(String.Join(", ", modifiedFieldValues))
-                                              updateTable(databaseName, tableComune, pkComune, pkValue, fieldsComune, modifiedFieldValues)
-                                              readTable(databaseName, tableComune, dgvComuni, fieldsComune)
+                                              UpdateTable(databaseName, tableComune, pkComune, pkValue, fieldsComune, modifiedFieldValues)
+                                              ReadTable(databaseName, tableComune, dgvComuni, fieldsComune)
                                           End Sub
+            InsertOrUpdateForm.Text = String.Format("Modifica Comune {0}={1}", pkComune, pkValue)
             InsertOrUpdateForm.Show()
         Else
             MsgBox("Seleziona prima una riga della tabella Comune")
         End If
     End Sub
 
+    Private Sub eliminaComune_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles eliminaComune.Click
+        Dim rows = dgvComuni.SelectedRows
+        If rows.Count > 0 Then
+            Dim pkValue As String = rows(0).Cells(pkIndexComune).Value
+            If MsgBox(String.Format("Eliminare il Comune con {0}={1}?", pkComune, pkValue), vbOKCancel, "Elima Comune") = vbOK Then
+                DeleteFromTable(databaseName, tableComune, pkComune, pkValue)
+                ReadTable(databaseName, tableComune, dgvComuni, fieldsComune)
+            End If
+        Else
+            MsgBox("Seleziona prima una riga della tabella Comune")
+        End If
+    End Sub
 End Class
