@@ -1,4 +1,5 @@
 ﻿Imports System.Data.SQLite
+Imports System.Collections.Generic
 
 Public Class Form1
 
@@ -120,8 +121,8 @@ Public Class Form1
     Public Sub InsertIntoTable(ByVal databasename As String,
                                ByVal tableName As String,
                                ByVal fieldNames As List(Of String),
-                               ByVal row As List(Of String))
-        Dim rows As New List(Of List(Of String))
+                               ByVal row As List(Of Object))
+        Dim rows As New List(Of List(Of Object))
         rows.Add(row)
         InsertIntoTable(databasename, tableName, fieldNames, rows)
     End Sub
@@ -129,7 +130,8 @@ Public Class Form1
     Public Sub InsertIntoTable(ByVal databasename As String,
                                ByVal tableName As String,
                                ByVal fields As List(Of String),
-                               ByVal rows As List(Of List(Of String)))
+                               ByVal rows As List(Of List(Of Object)),
+                               Optional ByVal progressAction As Action = Nothing)
 
         Using connection As New SQLiteConnection("Data Source=" + databasename)
 
@@ -144,14 +146,14 @@ Public Class Form1
             command.CommandText = String.Format("Insert into {0}({1}) values ({2})", tableName, fieldsString, paramsString)
             'MsgBox(command.CommandText)
 
-            For Each row As List(Of String) In rows
+            For Each row As List(Of Object) In rows
                 command.Parameters.Clear()
 
                 Dim fieldValuesCount = row.Count
 
                 Dim i As Integer = 0
                 While i < fieldsCount
-                    Dim fieldValue As String
+                    Dim fieldValue As Object
                     If i < fieldValuesCount Then
                         fieldValue = row(i)
                     Else
@@ -163,9 +165,12 @@ Public Class Form1
 
                 Try
                     command.ExecuteNonQuery()
+                    If Not progressAction Is Nothing Then
+                        progressAction()
+                    End If
                 Catch e As Exception
                     MsgBox(e.Message)
-
+                    Exit For
                 End Try
             Next
         End Using
@@ -201,7 +206,7 @@ Public Class Form1
                                ByVal pkName As String,
                                ByVal pkValue As String,
                                ByVal fields As List(Of String),
-                               ByVal fieldValues As List(Of String))
+                               ByVal fieldValues As List(Of Object))
 
         Using connection As New SQLiteConnection("Data Source=" + databasename)
 
@@ -270,6 +275,51 @@ Public Class Form1
         End Using
     End Sub
 
+    Public Sub DeleteAllRecords(ByVal databasename As String,
+                              ByVal tableName As String)
+
+        Using connection As New SQLiteConnection("Data Source=" + databasename)
+
+            connection.Open()
+
+            Dim command As SQLiteCommand = connection.CreateCommand()
+            command.CommandText = String.Format("Delete from {0}", tableName)
+
+            Try
+                command.ExecuteNonQuery()
+            Catch e As Exception
+                MsgBox(e.Message)
+            End Try
+
+        End Using
+    End Sub
+
+    Public Function ReadTableData(ByVal databasename As String, ByVal tableName As String, ByVal fieldNames As List(Of String)) As List(Of Dictionary(Of String, Object))
+        Dim rows As New List(Of Dictionary(Of String, Object))
+
+        Using connection As New SQLiteConnection("Data Source=" + databasename)
+
+            connection.Open()
+
+            Dim command As SQLiteCommand = connection.CreateCommand()
+            command.CommandText = String.Format("Select {0} from {1}", String.Join(", ", fieldNames), tableName)
+
+            Using reader As SQLiteDataReader = command.ExecuteReader()
+
+                While reader.Read() 'scorro tutte le righe
+                    Dim row As New Dictionary(Of String, Object)
+                    For c = 0 To reader.FieldCount - 1 'scorro tutti i campi della riga
+                        row.Add(fieldNames(c), reader(c))
+                    Next
+                    rows.Add(row)
+                End While
+            End Using
+
+        End Using
+
+        Return rows
+    End Function
+
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         ReadTable(databaseName, tableComune, dgvComuni, fieldsComune)
         pkIndexComune = getPrimaryKeyColumnIndex(dgvComuni, pkComune)
@@ -277,6 +327,7 @@ Public Class Form1
         pkIndexStazione = getPrimaryKeyColumnIndex(dgvStazioni, pkStazione)
         ReadTable(databaseName, tableRilevazione, dgvRilevazioni, fieldsRilevazione)
         pkIndexRilevazione = getPrimaryKeyColumnIndex(dgvRilevazioni, pkRilevazione)
+        progressLabel.Text = String.Empty
     End Sub
 
     Private Sub InserisciComune_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles inserisciComune.Click
@@ -284,7 +335,7 @@ Public Class Form1
         Dim nextId As Integer = 1 + getMaxId(databaseName, tableComune, pkComune)
 
         InsertOrUpdateForm.SetFields(fieldsComune, pkComune, nextId)
-        InsertOrUpdateForm.OkAction = Sub(fieldValues As List(Of String))
+        InsertOrUpdateForm.OkAction = Sub(fieldValues As List(Of Object))
                                           InsertIntoTable(databaseName, tableComune, fieldsComune, fieldValues)
                                           ReadTable(databaseName, tableComune, dgvComuni, fieldsComune)
                                       End Sub
@@ -310,7 +361,7 @@ Public Class Form1
             Dim fieldValues As List(Of String) = readRowByPrimaryKey(databaseName, tableComune, pkComune, pkValue)
             InsertOrUpdateForm.SetFields(fieldsComune, pkComune, Convert.ToInt32(pkValue))
             InsertOrUpdateForm.SetFieldValues(fieldValues)
-            InsertOrUpdateForm.OkAction = Sub(modifiedFieldValues As List(Of String))
+            InsertOrUpdateForm.OkAction = Sub(modifiedFieldValues As List(Of Object))
                                               UpdateTable(databaseName, tableComune, pkComune, pkValue, fieldsComune, modifiedFieldValues)
                                               ReadTable(databaseName, tableComune, dgvComuni, fieldsComune)
                                           End Sub
@@ -331,6 +382,67 @@ Public Class Form1
             End If
         Else
             MsgBox("Seleziona prima una riga della tabella Comune")
+        End If
+    End Sub
+
+    Private Function randomSingle(ByVal lowerBound As Single, ByVal upperBound As Single) As Single
+        Return (upperBound - lowerBound + 1) * Rnd() + lowerBound
+    End Function
+
+    Private Sub creaStazioni_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles creaStazioni.Click
+        Dim rows As List(Of Dictionary(Of String, Object)) = ReadTableData(databaseName, tableComune, fieldsComune)
+        Dim stazRows As New List(Of List(Of Object))
+        Dim idStaz As Integer = 0
+
+        Cursor = Cursors.WaitCursor
+        Application.DoEvents()
+
+        For Each row In rows
+            Dim idComune As Integer = row("Id")
+            Dim nomeComune As String = row("Nome")
+            Dim latitudine As Decimal = row("Latitudine")
+            Dim longitudine As Decimal = row("Longitudine")
+            Dim altitudineMin As Decimal = row("AltitudineMin")
+            Dim altitudineMax As Decimal = row("AltitudineMax")
+            Dim s As String = String.Format("{0} {1} {2} {3} {4}", idComune, latitudine, longitudine, altitudineMin, altitudineMax)
+
+            Dim nStaz As Integer = Convert.ToInt32(stazPerComune.Text)
+            Dim dLat As Decimal = Convert.ToDecimal(deltaLat.Text)
+            Dim dLong As Decimal = Convert.ToDecimal(deltaLong.Text)
+
+            Dim i As Integer
+            Randomize()
+            For i = 1 To nStaz
+                Dim indirizzoStaz As String = String.Empty
+                Dim nomeStaz As String = String.Format("{0}-{1}", nomeComune, i)
+                Dim latStaz As Decimal = latitudine + randomSingle(-dLat, dLat)
+                Dim longStaz As Decimal = longitudine + randomSingle(-dLong, dLong)
+                Dim altStaz As Decimal = randomSingle(altitudineMin, altitudineMax)
+                stazRows.Add(New List(Of Object) From {idStaz, idComune, indirizzoStaz, nomeStaz, latStaz, longStaz, altStaz})
+                idStaz = idStaz + 1
+            Next
+        Next
+
+        Dim completed = 0
+        InsertIntoTable(databaseName, tableStazione, fieldsStazione, stazRows, Sub()
+                                                                                   completed = completed + 1
+                                                                                   Dim percentuale As Integer = completed / idStaz * 100
+                                                                                   progressLabel.Text = String.Format("{0}%", percentuale)
+                                                                                   Application.DoEvents()
+                                                                               End Sub)
+        ReadTable(databaseName, tableStazione, dgvStazioni, fieldsStazione)
+
+        Cursor = Cursors.Default
+        Application.DoEvents()
+
+        MsgBox(String.Format("Sono state inserite {0} stazioni", completed), vbOK, "Inserimento stazioni")
+        progressLabel.Text = String.Empty
+    End Sub
+
+    Private Sub eliminaStazioni_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles eliminaStazioni.Click
+        If MsgBox("Eliminare tutte le stazioni?", vbOKCancel, "Elima Stazioni") = vbOK Then
+            DeleteAllRecords(databaseName, tableStazione)
+            ReadTable(databaseName, tableStazione, dgvStazioni, fieldsStazione)
         End If
     End Sub
 End Class

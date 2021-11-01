@@ -1,7 +1,7 @@
 ﻿Public Class InsertOrUpdateForm
 
     Private listOfFields As New List(Of TextBox)
-    Public OkAction As Action(Of List(Of String))
+    Public OkAction As Action(Of List(Of Object))
 
     Private Function CreateFieldPanel(ByVal i As Integer, ByVal fieldName As String, ByVal fieldValue As String, ByVal enabled As Boolean) As TextBox
         Dim fpanel = New FlowLayoutPanel()
@@ -58,7 +58,7 @@
 
     Private Sub okButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles okButton.Click
         If Not IsNothing(OkAction) Then
-            Dim fieldValues As New List(Of String)
+            Dim fieldValues As New List(Of Object)
             For Each field In listOfFields
                 If Not String.IsNullOrEmpty(field.Text) Then
                     fieldValues.Add(field.Text)
