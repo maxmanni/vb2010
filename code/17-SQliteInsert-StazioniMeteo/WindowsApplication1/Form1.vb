@@ -459,21 +459,24 @@ Public Class Form1
         Dim pmax As Decimal = Convert.ToDecimal(presMax.Text)
 
         Dim da, a As Date
-        Dim format As String = "yyyy-MM-dd hh:mm:ss"
+        Dim format As String = "yyyy-MM-dd HH:mm:ss"
         Try
             da = DateTime.ParseExact(tempoIniz.Text, format, CultureInfo.InvariantCulture)
-            MsgBox(da)
+            'MsgBox(da)
         Catch fe As FormatException
             MsgBox("tempoIniz non valido")
             Return
         End Try
         Try
             a = DateTime.ParseExact(tempoFin.Text, format, CultureInfo.InvariantCulture)
-            MsgBox(a)
+            'MsgBox(a)
         Catch fe As FormatException
             MsgBox("tempoFin non valido")
             Return
         End Try
+
+        Dim daTicks As Long = da.Ticks
+        Dim interval As Single = Convert.ToSingle(a.Ticks - daTicks) / Convert.ToSingle(nRilevaz)
 
         Cursor = Cursors.WaitCursor
         Application.DoEvents()
@@ -484,7 +487,8 @@ Public Class Form1
             Dim numeroProgressivo As Integer
             Randomize()
             For numeroProgressivo = 1 To nRilevaz
-                Dim tempo As String = da.ToString(format) 'TODO: random tempo
+                Dim ticks As Long = daTicks + Convert.ToInt64(Convert.ToSingle(numeroProgressivo) * interval)
+                Dim tempo As String = New Date(ticks).ToString(format)
                 Dim temperatura As Decimal = randomSingle(tmin, tmax)
                 Dim pressione As Decimal = randomSingle(pmin, pmax)
                 rilevazRows.Add(New List(Of Object) From {numeroProgressivo, idStaz, tempo, temperatura, pressione})
@@ -507,4 +511,12 @@ Public Class Form1
         MsgBox(String.Format("Sono state inserite {0} rilevazioni", completed), vbOK, "Inserimento rilevazioni")
         progressRilevazioni.Text = String.Empty
     End Sub
+
+    Private Sub eliminaRilevazioni_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles eliminaRilevazioni.Click
+        If MsgBox("Eliminare tutte le rilevazioni?", vbOKCancel, "Elima Rilevazioni") = vbOK Then
+            DeleteAllRecords(databaseName, tableRilevazione)
+            ReadTable(databaseName, tableRilevazione, dgvRilevazioni, fieldsRilevazione)
+        End If
+    End Sub
+
 End Class

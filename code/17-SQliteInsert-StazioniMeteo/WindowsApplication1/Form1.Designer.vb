@@ -173,7 +173,7 @@ Partial Class Form1
         Me.deltaLat.Name = "deltaLat"
         Me.deltaLat.Size = New System.Drawing.Size(66, 20)
         Me.deltaLat.TabIndex = 19
-        Me.deltaLat.Text = "0.5"
+        Me.deltaLat.Text = "1"
         '
         'deltaLong
         '
@@ -181,7 +181,7 @@ Partial Class Form1
         Me.deltaLong.Name = "deltaLong"
         Me.deltaLong.Size = New System.Drawing.Size(66, 20)
         Me.deltaLong.TabIndex = 20
-        Me.deltaLong.Text = "0.5"
+        Me.deltaLong.Text = "1"
         '
         'Label6
         '
@@ -198,7 +198,7 @@ Partial Class Form1
         Me.stazPerComune.Name = "stazPerComune"
         Me.stazPerComune.Size = New System.Drawing.Size(66, 20)
         Me.stazPerComune.TabIndex = 22
-        Me.stazPerComune.Text = "10"
+        Me.stazPerComune.Text = "5"
         '
         'creaStazioni
         '
@@ -301,7 +301,7 @@ Partial Class Form1
         Me.tempoIniz.Name = "tempoIniz"
         Me.tempoIniz.Size = New System.Drawing.Size(124, 20)
         Me.tempoIniz.TabIndex = 34
-        Me.tempoIniz.Text = "2018-01-01 00:00:00"
+        Me.tempoIniz.Text = "2020-01-01 00:00:00"
         '
         'tempoFin
         '
@@ -317,7 +317,7 @@ Partial Class Form1
         Me.rilevazPerStaz.Name = "rilevazPerStaz"
         Me.rilevazPerStaz.Size = New System.Drawing.Size(59, 20)
         Me.rilevazPerStaz.TabIndex = 36
-        Me.rilevazPerStaz.Text = "3"
+        Me.rilevazPerStaz.Text = "800"
         '
         'progressRilevazioni
         '
