@@ -1,5 +1,6 @@
 ﻿Imports System.Data.SQLite
 Imports System.Collections.Generic
+Imports System.Globalization
 
 Public Class Form1
 
@@ -327,7 +328,8 @@ Public Class Form1
         pkIndexStazione = getPrimaryKeyColumnIndex(dgvStazioni, pkStazione)
         ReadTable(databaseName, tableRilevazione, dgvRilevazioni, fieldsRilevazione)
         pkIndexRilevazione = getPrimaryKeyColumnIndex(dgvRilevazioni, pkRilevazione)
-        progressLabel.Text = String.Empty
+        progressStaz.Text = String.Empty
+        progressRilevazioni.Text = String.Empty
     End Sub
 
     Private Sub InserisciComune_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles inserisciComune.Click
@@ -386,7 +388,7 @@ Public Class Form1
     End Sub
 
     Private Function randomSingle(ByVal lowerBound As Single, ByVal upperBound As Single) As Single
-        Return (upperBound - lowerBound + 1) * Rnd() + lowerBound
+        Return (upperBound - lowerBound) * Rnd() + lowerBound
     End Function
 
     Private Sub creaStazioni_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles creaStazioni.Click
@@ -397,6 +399,10 @@ Public Class Form1
         Cursor = Cursors.WaitCursor
         Application.DoEvents()
 
+        Dim nStaz As Integer = Convert.ToInt32(stazPerComune.Text)
+        Dim dLat As Decimal = Convert.ToDecimal(deltaLat.Text)
+        Dim dLong As Decimal = Convert.ToDecimal(deltaLong.Text)
+
         For Each row In rows
             Dim idComune As Integer = row("Id")
             Dim nomeComune As String = row("Nome")
@@ -404,11 +410,6 @@ Public Class Form1
             Dim longitudine As Decimal = row("Longitudine")
             Dim altitudineMin As Decimal = row("AltitudineMin")
             Dim altitudineMax As Decimal = row("AltitudineMax")
-            Dim s As String = String.Format("{0} {1} {2} {3} {4}", idComune, latitudine, longitudine, altitudineMin, altitudineMax)
-
-            Dim nStaz As Integer = Convert.ToInt32(stazPerComune.Text)
-            Dim dLat As Decimal = Convert.ToDecimal(deltaLat.Text)
-            Dim dLong As Decimal = Convert.ToDecimal(deltaLong.Text)
 
             Dim i As Integer
             Randomize()
@@ -427,7 +428,7 @@ Public Class Form1
         InsertIntoTable(databaseName, tableStazione, fieldsStazione, stazRows, Sub()
                                                                                    completed = completed + 1
                                                                                    Dim percentuale As Integer = completed / idStaz * 100
-                                                                                   progressLabel.Text = String.Format("{0}%", percentuale)
+                                                                                   progressStaz.Text = String.Format("{0}%", percentuale)
                                                                                    Application.DoEvents()
                                                                                End Sub)
         ReadTable(databaseName, tableStazione, dgvStazioni, fieldsStazione)
@@ -436,7 +437,7 @@ Public Class Form1
         Application.DoEvents()
 
         MsgBox(String.Format("Sono state inserite {0} stazioni", completed), vbOK, "Inserimento stazioni")
-        progressLabel.Text = String.Empty
+        progressStaz.Text = String.Empty
     End Sub
 
     Private Sub eliminaStazioni_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles eliminaStazioni.Click
@@ -444,5 +445,66 @@ Public Class Form1
             DeleteAllRecords(databaseName, tableStazione)
             ReadTable(databaseName, tableStazione, dgvStazioni, fieldsStazione)
         End If
+    End Sub
+
+    Private Sub creaRilevazioni_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles creaRilevazioni.Click
+        Dim stazioni As List(Of Dictionary(Of String, Object)) = ReadTableData(databaseName, tableStazione, New List(Of String) From {"Id"})
+        Dim rilevazRows As New List(Of List(Of Object))
+        Dim idRilevaz As Integer = 0
+
+        Dim nRilevaz As Integer = Convert.ToInt32(rilevazPerStaz.Text)
+        Dim tmin As Decimal = Convert.ToDecimal(tempMin.Text)
+        Dim tmax As Decimal = Convert.ToDecimal(tempMax.Text)
+        Dim pmin As Decimal = Convert.ToDecimal(presMin.Text)
+        Dim pmax As Decimal = Convert.ToDecimal(presMax.Text)
+
+        Dim da, a As Date
+        Dim format As String = "yyyy-MM-dd hh:mm:ss"
+        Try
+            da = DateTime.ParseExact(tempoIniz.Text, format, CultureInfo.InvariantCulture)
+            MsgBox(da)
+        Catch fe As FormatException
+            MsgBox("tempoIniz non valido")
+            Return
+        End Try
+        Try
+            a = DateTime.ParseExact(tempoFin.Text, format, CultureInfo.InvariantCulture)
+            MsgBox(a)
+        Catch fe As FormatException
+            MsgBox("tempoFin non valido")
+            Return
+        End Try
+
+        Cursor = Cursors.WaitCursor
+        Application.DoEvents()
+
+        For Each stazione In stazioni
+            Dim idStaz As Integer = stazione("Id")
+
+            Dim numeroProgressivo As Integer
+            Randomize()
+            For numeroProgressivo = 1 To nRilevaz
+                Dim tempo As String = da.ToString(format) 'TODO: random tempo
+                Dim temperatura As Decimal = randomSingle(tmin, tmax)
+                Dim pressione As Decimal = randomSingle(pmin, pmax)
+                rilevazRows.Add(New List(Of Object) From {numeroProgressivo, idStaz, tempo, temperatura, pressione})
+                idRilevaz = idRilevaz + 1
+            Next
+        Next
+
+        Dim completed = 0
+        InsertIntoTable(databaseName, tableRilevazione, fieldsRilevazione, rilevazRows, Sub()
+                                                                                            completed = completed + 1
+                                                                                            Dim percentuale As Integer = completed / idRilevaz * 100
+                                                                                            progressRilevazioni.Text = String.Format("{0}%", percentuale)
+                                                                                            Application.DoEvents()
+                                                                                        End Sub)
+        ReadTable(databaseName, tableRilevazione, dgvRilevazioni, fieldsRilevazione)
+
+        Cursor = Cursors.Default
+        Application.DoEvents()
+
+        MsgBox(String.Format("Sono state inserite {0} rilevazioni", completed), vbOK, "Inserimento rilevazioni")
+        progressRilevazioni.Text = String.Empty
     End Sub
 End Class

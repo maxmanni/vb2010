@@ -39,7 +39,21 @@ Partial Class Form1
         Me.stazPerComune = New System.Windows.Forms.TextBox()
         Me.creaStazioni = New System.Windows.Forms.Button()
         Me.eliminaStazioni = New System.Windows.Forms.Button()
-        Me.progressLabel = New System.Windows.Forms.Label()
+        Me.progressStaz = New System.Windows.Forms.Label()
+        Me.Label7 = New System.Windows.Forms.Label()
+        Me.Label8 = New System.Windows.Forms.Label()
+        Me.Label9 = New System.Windows.Forms.Label()
+        Me.Label10 = New System.Windows.Forms.Label()
+        Me.tempMin = New System.Windows.Forms.TextBox()
+        Me.tempMax = New System.Windows.Forms.TextBox()
+        Me.presMin = New System.Windows.Forms.TextBox()
+        Me.presMax = New System.Windows.Forms.TextBox()
+        Me.tempoIniz = New System.Windows.Forms.TextBox()
+        Me.tempoFin = New System.Windows.Forms.TextBox()
+        Me.rilevazPerStaz = New System.Windows.Forms.TextBox()
+        Me.progressRilevazioni = New System.Windows.Forms.Label()
+        Me.eliminaRilevazioni = New System.Windows.Forms.Button()
+        Me.creaRilevazioni = New System.Windows.Forms.Button()
         CType(Me.dgvComuni, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dgvStazioni, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dgvRilevazioni, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -204,21 +218,154 @@ Partial Class Form1
         Me.eliminaStazioni.Text = "Elimina Stazioni"
         Me.eliminaStazioni.UseVisualStyleBackColor = True
         '
-        'progressLabel
+        'progressStaz
         '
-        Me.progressLabel.AutoSize = True
-        Me.progressLabel.Location = New System.Drawing.Point(643, 462)
-        Me.progressLabel.Name = "progressLabel"
-        Me.progressLabel.Size = New System.Drawing.Size(47, 13)
-        Me.progressLabel.TabIndex = 25
-        Me.progressLabel.Text = "progress"
+        Me.progressStaz.AutoSize = True
+        Me.progressStaz.Location = New System.Drawing.Point(643, 462)
+        Me.progressStaz.Name = "progressStaz"
+        Me.progressStaz.Size = New System.Drawing.Size(47, 13)
+        Me.progressStaz.TabIndex = 25
+        Me.progressStaz.Text = "progress"
+        '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Location = New System.Drawing.Point(636, 586)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(110, 13)
+        Me.Label7.TabIndex = 26
+        Me.Label7.Text = "temperature (min-max)"
+        '
+        'Label8
+        '
+        Me.Label8.AutoSize = True
+        Me.Label8.Location = New System.Drawing.Point(636, 616)
+        Me.Label8.Name = "Label8"
+        Me.Label8.Size = New System.Drawing.Size(95, 13)
+        Me.Label8.TabIndex = 27
+        Me.Label8.Text = "pressioni (min-max)"
+        '
+        'Label9
+        '
+        Me.Label9.AutoSize = True
+        Me.Label9.Location = New System.Drawing.Point(636, 646)
+        Me.Label9.Name = "Label9"
+        Me.Label9.Size = New System.Drawing.Size(76, 13)
+        Me.Label9.TabIndex = 28
+        Me.Label9.Text = "data ora-(da-a)"
+        '
+        'Label10
+        '
+        Me.Label10.AutoSize = True
+        Me.Label10.Location = New System.Drawing.Point(636, 698)
+        Me.Label10.Name = "Label10"
+        Me.Label10.Size = New System.Drawing.Size(113, 13)
+        Me.Label10.TabIndex = 29
+        Me.Label10.Text = "rilevazioni-per-stazione"
+        '
+        'tempMin
+        '
+        Me.tempMin.Location = New System.Drawing.Point(787, 587)
+        Me.tempMin.Name = "tempMin"
+        Me.tempMin.Size = New System.Drawing.Size(59, 20)
+        Me.tempMin.TabIndex = 30
+        Me.tempMin.Text = "-20"
+        '
+        'tempMax
+        '
+        Me.tempMax.Location = New System.Drawing.Point(852, 587)
+        Me.tempMax.Name = "tempMax"
+        Me.tempMax.Size = New System.Drawing.Size(59, 20)
+        Me.tempMax.TabIndex = 31
+        Me.tempMax.Text = "40"
+        '
+        'presMin
+        '
+        Me.presMin.Location = New System.Drawing.Point(787, 616)
+        Me.presMin.Name = "presMin"
+        Me.presMin.Size = New System.Drawing.Size(59, 20)
+        Me.presMin.TabIndex = 32
+        Me.presMin.Text = "860"
+        '
+        'presMax
+        '
+        Me.presMax.Location = New System.Drawing.Point(852, 616)
+        Me.presMax.Name = "presMax"
+        Me.presMax.Size = New System.Drawing.Size(59, 20)
+        Me.presMax.TabIndex = 33
+        Me.presMax.Text = "1020"
+        '
+        'tempoIniz
+        '
+        Me.tempoIniz.Location = New System.Drawing.Point(787, 646)
+        Me.tempoIniz.Name = "tempoIniz"
+        Me.tempoIniz.Size = New System.Drawing.Size(124, 20)
+        Me.tempoIniz.TabIndex = 34
+        Me.tempoIniz.Text = "2018-01-01 00:00:00"
+        '
+        'tempoFin
+        '
+        Me.tempoFin.Location = New System.Drawing.Point(787, 672)
+        Me.tempoFin.Name = "tempoFin"
+        Me.tempoFin.Size = New System.Drawing.Size(124, 20)
+        Me.tempoFin.TabIndex = 35
+        Me.tempoFin.Text = "2021-10-31 23:59:59"
+        '
+        'rilevazPerStaz
+        '
+        Me.rilevazPerStaz.Location = New System.Drawing.Point(787, 698)
+        Me.rilevazPerStaz.Name = "rilevazPerStaz"
+        Me.rilevazPerStaz.Size = New System.Drawing.Size(59, 20)
+        Me.rilevazPerStaz.TabIndex = 36
+        Me.rilevazPerStaz.Text = "3"
+        '
+        'progressRilevazioni
+        '
+        Me.progressRilevazioni.AutoSize = True
+        Me.progressRilevazioni.Location = New System.Drawing.Point(643, 774)
+        Me.progressRilevazioni.Name = "progressRilevazioni"
+        Me.progressRilevazioni.Size = New System.Drawing.Size(47, 13)
+        Me.progressRilevazioni.TabIndex = 39
+        Me.progressRilevazioni.Text = "progress"
+        '
+        'eliminaRilevazioni
+        '
+        Me.eliminaRilevazioni.Location = New System.Drawing.Point(771, 724)
+        Me.eliminaRilevazioni.Name = "eliminaRilevazioni"
+        Me.eliminaRilevazioni.Size = New System.Drawing.Size(140, 40)
+        Me.eliminaRilevazioni.TabIndex = 38
+        Me.eliminaRilevazioni.Text = "Elimina Rilevazioni"
+        Me.eliminaRilevazioni.UseVisualStyleBackColor = True
+        '
+        'creaRilevazioni
+        '
+        Me.creaRilevazioni.Location = New System.Drawing.Point(638, 724)
+        Me.creaRilevazioni.Name = "creaRilevazioni"
+        Me.creaRilevazioni.Size = New System.Drawing.Size(117, 40)
+        Me.creaRilevazioni.TabIndex = 37
+        Me.creaRilevazioni.Text = "Crea Rilevazioni"
+        Me.creaRilevazioni.UseVisualStyleBackColor = True
         '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1009, 802)
-        Me.Controls.Add(Me.progressLabel)
+        Me.Controls.Add(Me.progressRilevazioni)
+        Me.Controls.Add(Me.eliminaRilevazioni)
+        Me.Controls.Add(Me.creaRilevazioni)
+        Me.Controls.Add(Me.rilevazPerStaz)
+        Me.Controls.Add(Me.tempoFin)
+        Me.Controls.Add(Me.tempoIniz)
+        Me.Controls.Add(Me.presMax)
+        Me.Controls.Add(Me.presMin)
+        Me.Controls.Add(Me.tempMax)
+        Me.Controls.Add(Me.tempMin)
+        Me.Controls.Add(Me.Label10)
+        Me.Controls.Add(Me.Label9)
+        Me.Controls.Add(Me.Label8)
+        Me.Controls.Add(Me.Label7)
+        Me.Controls.Add(Me.progressStaz)
         Me.Controls.Add(Me.eliminaStazioni)
         Me.Controls.Add(Me.creaStazioni)
         Me.Controls.Add(Me.stazPerComune)
@@ -262,6 +409,20 @@ Partial Class Form1
     Friend WithEvents stazPerComune As System.Windows.Forms.TextBox
     Friend WithEvents creaStazioni As System.Windows.Forms.Button
     Friend WithEvents eliminaStazioni As System.Windows.Forms.Button
-    Friend WithEvents progressLabel As System.Windows.Forms.Label
+    Friend WithEvents progressStaz As System.Windows.Forms.Label
+    Friend WithEvents Label7 As System.Windows.Forms.Label
+    Friend WithEvents Label8 As System.Windows.Forms.Label
+    Friend WithEvents Label9 As System.Windows.Forms.Label
+    Friend WithEvents Label10 As System.Windows.Forms.Label
+    Friend WithEvents tempMin As System.Windows.Forms.TextBox
+    Friend WithEvents tempMax As System.Windows.Forms.TextBox
+    Friend WithEvents presMin As System.Windows.Forms.TextBox
+    Friend WithEvents presMax As System.Windows.Forms.TextBox
+    Friend WithEvents tempoIniz As System.Windows.Forms.TextBox
+    Friend WithEvents tempoFin As System.Windows.Forms.TextBox
+    Friend WithEvents rilevazPerStaz As System.Windows.Forms.TextBox
+    Friend WithEvents progressRilevazioni As System.Windows.Forms.Label
+    Friend WithEvents eliminaRilevazioni As System.Windows.Forms.Button
+    Friend WithEvents creaRilevazioni As System.Windows.Forms.Button
 
 End Class
