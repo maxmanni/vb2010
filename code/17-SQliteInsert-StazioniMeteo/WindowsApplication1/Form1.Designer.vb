@@ -29,6 +29,8 @@ Partial Class Form1
         Me.dgvStazioni = New System.Windows.Forms.DataGridView()
         Me.dgvRilevazioni = New System.Windows.Forms.DataGridView()
         Me.inserisciComune = New System.Windows.Forms.Button()
+        Me.modificaComune = New System.Windows.Forms.Button()
+        Me.eliminaComune = New System.Windows.Forms.Button()
         CType(Me.dgvComuni, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dgvStazioni, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dgvRilevazioni, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -69,7 +71,9 @@ Partial Class Form1
         Me.dgvComuni.AllowUserToOrderColumns = True
         Me.dgvComuni.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvComuni.Location = New System.Drawing.Point(16, 32)
+        Me.dgvComuni.MultiSelect = False
         Me.dgvComuni.Name = "dgvComuni"
+        Me.dgvComuni.ReadOnly = True
         Me.dgvComuni.Size = New System.Drawing.Size(594, 214)
         Me.dgvComuni.TabIndex = 11
         '
@@ -78,7 +82,9 @@ Partial Class Form1
         Me.dgvStazioni.AllowUserToOrderColumns = True
         Me.dgvStazioni.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvStazioni.Location = New System.Drawing.Point(16, 283)
+        Me.dgvStazioni.MultiSelect = False
         Me.dgvStazioni.Name = "dgvStazioni"
+        Me.dgvStazioni.ReadOnly = True
         Me.dgvStazioni.Size = New System.Drawing.Size(594, 230)
         Me.dgvStazioni.TabIndex = 12
         '
@@ -87,24 +93,46 @@ Partial Class Form1
         Me.dgvRilevazioni.AllowUserToOrderColumns = True
         Me.dgvRilevazioni.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvRilevazioni.Location = New System.Drawing.Point(16, 560)
+        Me.dgvRilevazioni.MultiSelect = False
         Me.dgvRilevazioni.Name = "dgvRilevazioni"
+        Me.dgvRilevazioni.ReadOnly = True
         Me.dgvRilevazioni.Size = New System.Drawing.Size(594, 230)
         Me.dgvRilevazioni.TabIndex = 13
         '
         'inserisciComune
         '
-        Me.inserisciComune.Location = New System.Drawing.Point(666, 79)
+        Me.inserisciComune.Location = New System.Drawing.Point(666, 77)
         Me.inserisciComune.Name = "inserisciComune"
-        Me.inserisciComune.Size = New System.Drawing.Size(132, 38)
+        Me.inserisciComune.Size = New System.Drawing.Size(132, 40)
         Me.inserisciComune.TabIndex = 14
         Me.inserisciComune.Text = "Inserisci Comune"
         Me.inserisciComune.UseVisualStyleBackColor = True
+        '
+        'modificaComune
+        '
+        Me.modificaComune.Location = New System.Drawing.Point(666, 123)
+        Me.modificaComune.Name = "modificaComune"
+        Me.modificaComune.Size = New System.Drawing.Size(132, 40)
+        Me.modificaComune.TabIndex = 15
+        Me.modificaComune.Text = "Modifica Comune"
+        Me.modificaComune.UseVisualStyleBackColor = True
+        '
+        'eliminaComune
+        '
+        Me.eliminaComune.Location = New System.Drawing.Point(666, 169)
+        Me.eliminaComune.Name = "eliminaComune"
+        Me.eliminaComune.Size = New System.Drawing.Size(132, 40)
+        Me.eliminaComune.TabIndex = 16
+        Me.eliminaComune.Text = "Elimina Comune"
+        Me.eliminaComune.UseVisualStyleBackColor = True
         '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1009, 802)
+        Me.Controls.Add(Me.eliminaComune)
+        Me.Controls.Add(Me.modificaComune)
         Me.Controls.Add(Me.inserisciComune)
         Me.Controls.Add(Me.dgvRilevazioni)
         Me.Controls.Add(Me.dgvStazioni)
@@ -128,5 +156,7 @@ Partial Class Form1
     Friend WithEvents dgvStazioni As System.Windows.Forms.DataGridView
     Friend WithEvents dgvRilevazioni As System.Windows.Forms.DataGridView
     Friend WithEvents inserisciComune As System.Windows.Forms.Button
+    Friend WithEvents modificaComune As System.Windows.Forms.Button
+    Friend WithEvents eliminaComune As System.Windows.Forms.Button
 
 End Class

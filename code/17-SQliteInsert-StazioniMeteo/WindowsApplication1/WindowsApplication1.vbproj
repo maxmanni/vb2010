@@ -82,10 +82,10 @@
       <DependentUpon>Form1.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InsertForm.Designer.vb">
-      <DependentUpon>InsertForm.vb</DependentUpon>
+    <Compile Include="InsertOrUpdateForm.Designer.vb">
+      <DependentUpon>InsertOrUpdateForm.vb</DependentUpon>
     </Compile>
-    <Compile Include="InsertForm.vb">
+    <Compile Include="InsertOrUpdateForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MyProject\AssemblyInfo.vb" />
@@ -108,8 +108,8 @@
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="InsertForm.resx">
-      <DependentUpon>InsertForm.vb</DependentUpon>
+    <EmbeddedResource Include="InsertOrUpdateForm.resx">
+      <DependentUpon>InsertOrUpdateForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MyProject\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>

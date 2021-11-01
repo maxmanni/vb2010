@@ -6,13 +6,17 @@ Public Class Form1
 
     Public Const tableComune = "Comune"
     Public Const pkComune = "Id"
+    Public pkIndexComune As Integer
     Public fieldsComune = New List(Of String)
 
     Public Const tableStazione = "Stazione"
     Public Const pkStazione = "Id"
+    Public pkIndexStazione As Integer
     Public fieldsStazione = New List(Of String)
 
     Public Const tableRilevazione = "Rilevazione"
+    Public Const pkRilevazione = "NumeroProgressivo"
+    Public pkIndexRilevazione As Integer
     Public fieldsRilevazione = New List(Of String)
 
 
@@ -57,6 +61,48 @@ Public Class Form1
 
         End Using
     End Sub
+
+    Private Function getFieldStringValue(ByVal reader As SQLiteDataReader, ByVal c As Integer) As String
+        Dim stringValue As String
+        If Not reader.IsDBNull(c) Then
+            Dim type As String
+            type = reader.GetDataTypeName(c)
+            If type.IndexOf("int", 0, StringComparison.CurrentCultureIgnoreCase) > -1 Then
+                stringValue = reader.GetInt32(c).ToString()
+            ElseIf type.IndexOf("decimal", 0, StringComparison.CurrentCultureIgnoreCase) > -1 Then
+                stringValue = reader.GetDecimal(c).ToString()
+            Else
+                stringValue = reader.GetString(c)
+            End If
+        Else
+            stringValue = String.Empty
+        End If
+        Return stringValue
+    End Function
+
+    Public Function readRowByPrimaryKey(ByVal databasename As String, ByVal tableName As String, ByVal pkName As String, ByVal pkvalue As String) As List(Of String)
+
+        Dim fieldValues As New List(Of String)
+
+        Using connection As New SQLiteConnection("Data Source=" + databasename)
+            connection.Open()
+
+            Dim command As SQLiteCommand = connection.CreateCommand()
+            command.CommandText = String.Format("Select * from {0} where {1} = @pk", tableName, pkName)
+            command.Parameters.AddWithValue("@pk", pkvalue)
+
+            Using reader As SQLiteDataReader = command.ExecuteReader()
+                If reader.Read() Then
+                    For c = 0 To reader.FieldCount - 1
+                        Dim stringValue As String = getFieldStringValue(reader, c)
+                        fieldValues.Add(stringValue)
+                    Next
+                End If
+            End Using
+
+        End Using
+        Return fieldValues
+    End Function
 
     Private Function getParamName(ByVal paramIndex As Integer) As String
         Return String.Format("@param{0}", paramIndex)
@@ -115,7 +161,12 @@ Public Class Form1
                     i = i + 1
                 End While
 
-                command.ExecuteNonQuery()
+                Try
+                    command.ExecuteNonQuery()
+                Catch e As Exception
+                    MsgBox(e.Message)
+
+                End Try
             Next
         End Using
     End Sub
@@ -146,20 +197,49 @@ Public Class Form1
 
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         readTable(databaseName, tableComune, dgvComuni, fieldsComune)
+        pkIndexComune = getPrimaryKeyColumnIndex(dgvComuni, pkComune)
         readTable(databaseName, tableStazione, dgvStazioni, fieldsStazione)
+        pkIndexStazione = getPrimaryKeyColumnIndex(dgvStazioni, pkStazione)
         readTable(databaseName, tableRilevazione, dgvRilevazioni, fieldsRilevazione)
+        pkIndexRilevazione = getPrimaryKeyColumnIndex(dgvRilevazioni, pkRilevazione)
     End Sub
 
     Private Sub InserisciComune_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles inserisciComune.Click
 
         Dim nextId As Integer = 1 + getMaxId(databaseName, tableComune, pkComune)
 
-        InsertForm.SetFields(fieldsComune, pkComune, nextId)
-        insertForm.OkAction = Sub(fieldValues As List(Of String))
-                                  insertIntoTable(databaseName, tableComune, fieldsComune, fieldValues)
-                                  readTable(databaseName, tableComune, dgvComuni, fieldsComune)
-                              End Sub
-        insertForm.Show()
+        InsertOrUpdateForm.SetFields(fieldsComune, pkComune, nextId)
+        InsertOrUpdateForm.OkAction = Sub(fieldValues As List(Of String))
+                                          insertIntoTable(databaseName, tableComune, fieldsComune, fieldValues)
+                                          readTable(databaseName, tableComune, dgvComuni, fieldsComune)
+                                      End Sub
+        InsertOrUpdateForm.Show()
+    End Sub
+
+    Private Function getPrimaryKeyColumnIndex(ByVal dgv As DataGridView, ByVal pkName As String) As Integer
+        Dim c As Integer
+        For c = 0 To dgv.Columns.Count - 1
+            If dgv.Columns(c).HeaderText = pkName Then
+                Return c
+            End If
+        Next
+    End Function
+
+
+    Private Sub modificaComune_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles modificaComune.Click
+        Dim rows = dgvComuni.SelectedRows
+        If rows.Count > 0 Then
+            Dim pkValue As String = rows(0).Cells(pkIndexComune).Value
+            Dim fieldValues As List(Of String) = readRowByPrimaryKey(databaseName, tableComune, pkComune, pkValue)
+            InsertOrUpdateForm.SetFields(fieldsComune, pkComune, Convert.ToInt32(pkValue))
+            InsertOrUpdateForm.SetFieldValues(fieldValues)
+            InsertOrUpdateForm.OkAction = Sub(modifiedFieldValues As List(Of String))
+                                              MsgBox(String.Join(", ", modifiedFieldValues))
+                                          End Sub
+            InsertOrUpdateForm.Show()
+        Else
+            MsgBox("Seleziona prima un Comune")
+        End If
     End Sub
 
 End Class

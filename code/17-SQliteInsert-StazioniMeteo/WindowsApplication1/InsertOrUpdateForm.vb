@@ -1,4 +1,4 @@
-﻿Public Class InsertForm
+﻿Public Class InsertOrUpdateForm
 
     Private listOfFields As New List(Of TextBox)
     Public OkAction As Action(Of List(Of String))
@@ -41,6 +41,14 @@
             End If
             Dim textbox As TextBox = CreateFieldPanel(i, fieldName, fieldValue, fieldEnabled)
             listOfFields.Add(textbox)
+        Next
+    End Sub
+
+    Public Sub SetFieldValues(ByVal fieldValues As List(Of String))
+        Dim i As Integer
+        For Each field As TextBox In listOfFields
+            field.Text = fieldValues(i)
+            i = i + 1
         Next
     End Sub
 
