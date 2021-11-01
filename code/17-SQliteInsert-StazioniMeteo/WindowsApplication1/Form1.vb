@@ -119,8 +119,8 @@ Public Class Form1
 
     Public Sub insertIntoTable(ByVal databasename As String,
                                ByVal tableName As String,
-                               ByRef fieldNames As List(Of String),
-                               ByRef row As List(Of String))
+                               ByVal fieldNames As List(Of String),
+                               ByVal row As List(Of String))
         Dim rows As New List(Of List(Of String))
         rows.Add(row)
         insertIntoTable(databasename, tableName, fieldNames, rows)
@@ -128,8 +128,8 @@ Public Class Form1
 
     Public Sub insertIntoTable(ByVal databasename As String,
                                ByVal tableName As String,
-                               ByRef fields As List(Of String),
-                               ByRef rows As List(Of List(Of String)))
+                               ByVal fields As List(Of String),
+                               ByVal rows As List(Of List(Of String)))
 
         Using connection As New SQLiteConnection("Data Source=" + databasename)
 
@@ -155,7 +155,7 @@ Public Class Form1
                     If i < fieldValuesCount Then
                         fieldValue = row(i)
                     Else
-                        fieldValue = vbNull
+                        fieldValue = Nothing
                     End If
                     command.Parameters.AddWithValue(params(i), fieldValue)
                     i = i + 1
@@ -194,6 +194,58 @@ Public Class Form1
 
         End Using
     End Function
+
+
+    Public Sub updateTable(ByVal databasename As String,
+                               ByVal tableName As String,
+                               ByVal pkName As String,
+                               ByVal pkValue As String,
+                               ByVal fields As List(Of String),
+                               ByVal fieldValues As List(Of String))
+
+        Using connection As New SQLiteConnection("Data Source=" + databasename)
+
+            connection.Open()
+
+            Dim i, paramCount As Integer
+            Dim params As New List(Of String)
+            Dim kvPairs As New List(Of String)
+
+            paramCount = 0
+            For i = 0 To fields.Count - 1
+                If fields(i) <> pkName And i < fieldValues.Count Then
+                    Dim paramName As String = String.Format("@param{0}", paramCount)
+                    params.Add(paramName)
+                    paramCount = paramCount + 1
+                    kvPairs.Add(String.Format("{0} = {1}", fields(i), paramName))
+                End If
+            Next
+
+            Dim command As SQLiteCommand = connection.CreateCommand()
+            command.CommandText = String.Format("Update {0} set {1} where {2}=@pkValue", tableName, String.Join(", ", kvPairs), pkName)
+            command.Parameters.AddWithValue("@pkValue", pkValue)
+            MsgBox(command.CommandText)
+
+            paramCount = 0
+            For i = 0 To fields.Count - 1
+                If fields(i) <> pkName And i < fieldValues.Count Then
+                    Dim fieldValue As String = Nothing
+                    If Not String.IsNullOrEmpty(fieldValues(i)) Then
+                        fieldValue = fieldValues(i)
+                    End If
+                    command.Parameters.AddWithValue(params(paramCount), fieldValue)
+                    paramCount = paramCount + 1
+                End If
+            Next
+
+            Try
+                command.ExecuteNonQuery()
+            Catch e As Exception
+                MsgBox(e.Message)
+            End Try
+
+        End Using
+    End Sub
 
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         readTable(databaseName, tableComune, dgvComuni, fieldsComune)
@@ -235,10 +287,12 @@ Public Class Form1
             InsertOrUpdateForm.SetFieldValues(fieldValues)
             InsertOrUpdateForm.OkAction = Sub(modifiedFieldValues As List(Of String))
                                               MsgBox(String.Join(", ", modifiedFieldValues))
+                                              updateTable(databaseName, tableComune, pkComune, pkValue, fieldsComune, modifiedFieldValues)
+                                              readTable(databaseName, tableComune, dgvComuni, fieldsComune)
                                           End Sub
             InsertOrUpdateForm.Show()
         Else
-            MsgBox("Seleziona prima un Comune")
+            MsgBox("Seleziona prima una riga della tabella Comune")
         End If
     End Sub
 
